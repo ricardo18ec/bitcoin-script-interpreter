@@ -2,11 +2,20 @@ package script;
 
 import java.util.Arrays;
 
+/**
+ * Clase que simula operaciones criptográficas.
+ * No implementa criptografía real, solo comportamientos básicos para pruebas.
+ */
 public class CryptoMock {
 
-    // Simulación simple de HASH160
+    /**
+     * Simula la función hash160.
+     * En este caso simplemente invierte el array de bytes.
+     *
+     * @param input datos de entrada
+     * @return "hash" simulado
+     */
     public byte[] hash160(byte[] input) {
-        // Simulación: devolvemos el mismo array invertido
         byte[] result = new byte[input.length];
 
         for (int i = 0; i < input.length; i++) {
@@ -16,9 +25,15 @@ public class CryptoMock {
         return result;
     }
 
-    // Simulación simple de verificación de firma
+    /**
+     * Simula la verificación de una firma.
+     * Considera válida la firma si es igual a la clave pública.
+     *
+     * @param signature firma a verificar
+     * @param pubKey clave pública
+     * @return true si coinciden, false en caso contrario
+     */
     public boolean checkSig(byte[] signature, byte[] pubKey) {
-        // Simulación: consideramos válida si ambos arrays son iguales
         return Arrays.equals(signature, pubKey);
     }
 }
