@@ -15,11 +15,20 @@ public enum Opcode {
     OP_EQUAL,
     OP_EQUALVERIFY,
 
-    // Criptográficas (mock)
+    // Criptográficas (simuladas)
     OP_HASH160,
-    OP_CHECKSIG;
+    OP_CHECKSIG,
 
+    // Control de flujo (Fase 2)
+    OP_IF,
+    OP_NOTIF,
+    OP_ELSE,
+    OP_ENDIF;
+
+    /**
+     * Indica si el opcode es un literal (OP_0 a OP_16)
+     */
     public boolean isLiteral() {
         return this.ordinal() <= OP_16.ordinal();
     }
-} 
+}
