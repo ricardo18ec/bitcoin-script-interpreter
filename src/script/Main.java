@@ -6,23 +6,20 @@ public class Main {
 
     public static void main(String[] args) {
 
-        // Simulamos pubKey
+        ScriptInterpreter interpreter = new ScriptInterpreter(true);
+
+        // =====================================
+        // 1. P2PKH VÁLIDO
+        // =====================================
+        System.out.println("=== P2PKH VALIDO ===");
+
         byte[] pubKey = "clave".getBytes();
-
-        // Para que checkSig sea true, signature debe ser igual
         byte[] signature = "clave".getBytes();
-
-        // Nuestro hash160 invierte el array
         byte[] pubKeyHash = new CryptoMock().hash160(pubKey);
 
-        // Construimos script completo (scriptSig + scriptPubKey)
-        List<Instruction> script = List.of(
-
-                // scriptSig
+        List<Instruction> scriptValido = List.of(
                 new Instruction(signature),
                 new Instruction(pubKey),
-
-                // scriptPubKey
                 new Instruction(Opcode.OP_DUP),
                 new Instruction(Opcode.OP_HASH160),
                 new Instruction(pubKeyHash),
@@ -30,10 +27,48 @@ public class Main {
                 new Instruction(Opcode.OP_CHECKSIG)
         );
 
-        ScriptInterpreter interpreter = new ScriptInterpreter(true);
+        boolean resultValido = interpreter.execute(scriptValido);
+        System.out.println("Resultado final: " + resultValido);
+        System.out.println();
 
-        boolean result = interpreter.execute(script);
 
-        System.out.println("Resultado final: " + result);
+        // =====================================
+        // 2. P2PKH INVÁLIDO
+        // =====================================
+        System.out.println("=== P2PKH INVALIDO ===");
+
+        byte[] badSignature = "firmaIncorrecta".getBytes();
+
+        List<Instruction> scriptInvalido = List.of(
+                new Instruction(badSignature),
+                new Instruction(pubKey),
+                new Instruction(Opcode.OP_DUP),
+                new Instruction(Opcode.OP_HASH160),
+                new Instruction(pubKeyHash),
+                new Instruction(Opcode.OP_EQUALVERIFY),
+                new Instruction(Opcode.OP_CHECKSIG)
+        );
+
+        boolean resultInvalido = interpreter.execute(scriptInvalido);
+        System.out.println("Resultado final: " + resultInvalido);
+        System.out.println();
+
+
+        // =====================================
+        // 3. IF / ELSE
+        // =====================================
+        System.out.println("=== TEST IF / ELSE ===");
+
+        List<Instruction> scriptIf = List.of(
+                new Instruction(new byte[]{1}), // cambiar a 0 para probar ELSE
+                new Instruction(Opcode.OP_IF),
+                new Instruction("A".getBytes()),
+                new Instruction(Opcode.OP_ELSE),
+                new Instruction("B".getBytes()),
+                new Instruction(Opcode.OP_ENDIF)
+        );
+
+        boolean resultIf = interpreter.execute(scriptIf);
+        System.out.println("Resultado final: " + resultIf);
     }
 }
